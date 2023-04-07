@@ -13,6 +13,19 @@ permissions:
   packages: write
 
 jobs:
+  list-images:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/pauldaniv/yellow-taxi-scripts/base:latest
+    outputs:
+      images: ${{ steps.set-images.outputs.images }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Images for later
+        id: set-images
+        run: echo "images=$(ls src | grep -v base | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+
   build-and-push-base:
     runs-on: ubuntu-latest
     steps:
@@ -31,22 +44,8 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: ./bin/push_image base
 
-  list-images:
-    needs: build-and-push-base
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/pauldaniv/yellow-taxi-scripts/base:latest
-    outputs:
-      images: ${{ steps.set-images.outputs.images }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set Images for later
-        id: set-images
-        run: echo "images=$(ls src | grep -v base | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
-
   build-and-push-images:
-    needs: list-images
+    needs: [list-images, build-and-push-base]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/pauldaniv/yellow-taxi-scripts/base:latest
