@@ -5,7 +5,7 @@ ACTION=$1
 ECR_CONTAINER_REGISTRY_URL="375158168967.dkr.ecr.us-east-2.amazonaws.com"
 
 if [[ -z "$ACTION" ]]; then
-  echo "No command specified, available commands [build, test, deploy]"
+  echo "No command specified, available commands [build, test, publish, deploy]"
   exit 1
 fi
 
@@ -34,13 +34,13 @@ function deploy() {
 }
 
 
-if [[ "$ACTION" == "build" ]]; the
+if [[ "$ACTION" = "build" ]]; then
   runBuild
-elif [[ "$ACTION" == "test"]]; then
+elif [[ "$ACTION" = "test" ]]; then
   runTest
-elif [[ "$ACTION" == "publish"]]; then
+elif [[ "$ACTION" = "publish" ]]; then
     publishArtifacts
-elif [[ "$ACTION" == "deploy"]]; then
+elif [[ "$ACTION" = "deploy" ]]; then
   deploy
 else
   echo "Unknown command $ACTION"
