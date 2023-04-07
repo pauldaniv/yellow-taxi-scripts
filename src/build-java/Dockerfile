@@ -10,6 +10,7 @@ RUN apt-get -y update \
     && apt-get -y install screen awscli apt-transport-https ca-certificates curl gnupg lsb-release
 
 WORKDIR /home/root
-ADD . /usr/bin/env
+ADD ci.sh /usr/bin/env/ci
+RUN chmod +x /usr/bin/env/ci
 
 CMD ["/bin/sh"]
