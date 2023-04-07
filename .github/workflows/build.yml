@@ -9,11 +9,6 @@ on:
   pull_request:
     branches: [ main ]
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  GITHUB_USER: ${{ secrets.GITHUB_USER }}
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -27,8 +22,12 @@ jobs:
           sudo apt-get -y upgrade
           sudo apt-get -y install screen awscli
       - name: Log into GitHub registry
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" \
-            | docker login ghcr.io -u ${GITHUB_USER:-${{ github.actor }}} --password-stdin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USER: ${{ secrets.GITHUB_USER }}
+        run: echo $GITHUB_TOKEN | docker login ghcr.io -u ${GITHUB_USER:-${{ github.actor }}} --password-stdin
       - name: Build
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: bash bin/build.sh
