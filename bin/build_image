@@ -3,24 +3,21 @@
 BUILD_OPTS="--no-cache"
 
 GITHUB_CONTAINER_REGISTRY_URL="ghcr.io/pauldaniv/yellow-taxi-scripts"
+IMAGE_NAME=$1
+
+if [[ -z "$IMAGE_NAME" ]]; then
+  echo "No image specified..."
+  exit 1
+fi
+
+cd "$(cd "$(dirname "$0")/.."; pwd)"
 
 function build_image() {
     local image=$1
-    local repo=$2
+    local repo=$GITHUB_CONTAINER_REGISTRY_URL
     local image_tag="$repo/$image:latest"
     echo "Building '$image_tag'..."
     docker build $BUILD_OPTS -t "$image_tag" "src/$image"
 }
 
-function build_and_push_top_level_image() {
-  build_image "$image" "$GITHUB_CONTAINER_REGISTRY_URL"
-}
-
-cd "$(cd "$(dirname "$0")/.."; pwd)"
-
-if [[ ! -z "$1" ]]; then
-  echo "No image specified..."
-  exit 1
-fi
-
-build_and_push_top_level_image "$1"
+build_image "$IMAGE_NAME"
