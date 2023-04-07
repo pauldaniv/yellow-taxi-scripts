@@ -20,6 +20,5 @@ RUN apt-get -y update \
     && apt-get install terraform
 
 WORKDIR /home/root
-ADD . .
 
 CMD ["/bin/sh"]
