@@ -20,33 +20,31 @@ function build_and_push_image() {
 }
 
 function build_and_push_top_level_image() {
-  build_and_push_image "$image" "$ECR_CONTAINER_REGISTRY_URL"
+  build_and_push_image "$image" "$GITHUB_CONTAINER_REGISTRY_URL"
 }
 
 function build_and_push_second_level_image() {
-  build_and_push_image "$image" "$GITHUB_CONTAINER_REGISTRY_URL"
+  build_and_push_image "$image" "ECR_CONTAINER_REGISTRY_URL"
 }
 
 cd "$(cd "$(dirname "$0")/.."; pwd)"
 
-echo "Building base images..."
-for image in "${BASE_IMAGES[@]}"; do
-  build_and_push_top_level_image $image
-done
+#echo "Building base images..."
+#for image in "${BASE_IMAGES[@]}"; do
+#  build_and_push_top_level_image $image
+#done
 
-echo "Logging to ECR..."
-aws ecr get-login-password --region us-east-2\
- | docker login --username AWS --password-stdin 375158168967.dkr.ecr.us-east-2.amazonaws.com
+#echo "Logging to ECR..."
+#aws ecr get-login-password --region us-east-2\
+# | docker login --username AWS --password-stdin 375158168967.dkr.ecr.us-east-2.amazonaws.com
 
-if [[ $? != 0 ]]; then
-  echo "Unable to login to ECR"
-  exit 1
-else
-  echo "Login to ECR succeeded!"
-fi
+#if [[ $? != 0 ]]; then
+#  echo "Unable to login to ECR"
+#  exit 1
+#else
+#  echo "Login to ECR succeeded!"
+#fi
 
 for image in $(ls src); do
-  if [[ ! " ${BASE_IMAGES[*]} " =~ " ${image} " ]]; then
-    build_and_push_second_level_image $image
-  fi
+  build_and_push_top_level_image $image
 done
