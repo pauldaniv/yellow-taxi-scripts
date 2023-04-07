@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/pauldaniv/yellow-taxi-s
 
 RUN apt-get -y update \
      && apt-get -y upgrade \
-     && apt-get install -y wget curl git
+     && apt-get install -y wget curl git jq
 
 WORKDIR /home/root
 
