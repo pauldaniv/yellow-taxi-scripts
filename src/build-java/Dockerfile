@@ -21,4 +21,4 @@ WORKDIR /home/root
 ADD ci.sh /usr/bin/ci
 RUN chmod +x /usr/bin/ci
 
-CMD ["/bin/sh"]
+CMD ["/bin/bash"]

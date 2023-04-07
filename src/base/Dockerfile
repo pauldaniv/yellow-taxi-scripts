@@ -9,4 +9,4 @@ RUN apt-get -y update \
 
 WORKDIR /home/root
 
-CMD ["/bin/sh"]
+CMD ["/bin/bash"]
