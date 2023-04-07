@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: Build Containers
 
 on:
   push:
@@ -10,10 +10,10 @@ on:
     branches: [ main ]
 
 env:
-  DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
-  GITLAB_DOCKER_REGISTRY_URL: ${{ secrets.GITLAB_DOCKER_REGISTRY_URL }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  TOKEN: ${{ secrets.TOKEN }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  GITHUB_USER: ${{ secrets.GITHUB_USER }}
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -21,5 +21,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y upgrade
+          sudo apt-get -y install screen awscli
+      - name: Log into GitHub registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" \
+            | docker login ghcr.io -u ${GITHUB_USER:-${{ github.actor }}} --password-stdin
       - name: Build
-        run: bash src/build.sh
+        run: bash bin/build.sh
