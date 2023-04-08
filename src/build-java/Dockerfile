@@ -8,7 +8,7 @@ ARG AWS_SECRET_ACCESS_KEY
 
 RUN apt-get -y update \
     && apt-get -y upgrade \
-    && apt-get -y install screen awscli apt-transport-https ca-certificates curl gnupg lsb-release \
+    && apt-get -y install screen awscli curl git gnupg apt-transport-https ca-certificates lsb-release \
     && curl -fsSL https://download.docker.com/linux/debian/gpg | \
     gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
     &&  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
