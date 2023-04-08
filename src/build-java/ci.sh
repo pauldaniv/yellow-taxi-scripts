@@ -2,7 +2,7 @@
 
 ACTION=$1
 
-ECR_CONTAINER_REGISTRY_URL="375158168967.dkr.ecr.us-east-2.amazonaws.com"
+ECR_CONTAINER_REGISTRY_URL="$AWS_DOMAIN_OWNER_ID.dkr.ecr.us-east-2.amazonaws.com"
 
 if [[ -z "$ACTION" ]]; then
   echo "No command specified, available commands [build, test, publish, deploy]"
@@ -23,8 +23,17 @@ function runTest() {
 }
 
 function publishArtifacts() {
+  echo "Logging into CodeArtifact"
+  export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain promotion --domain-owner $(AWS_DOMAIN_OWNER_ID) --region us-east-2 --query authorizationToken --output text`
+  if [[ $? = 0 ]]; then
+    echo "Login into CodeArtifact succeeded"
+  else
+    echo "Failed to login into CodeArtifact"
+    exit 1
+  fi
+
   echo "Publishing artifacts..."
-  ./gradlew deploy --imageName "$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
+  ./gradlew publish
 }
 
 function deploy() {
