@@ -3,9 +3,6 @@ FROM debian
 MAINTAINER Pavlo Daniv <pauldaniv@gmail.com>
 LABEL org.opencontainers.image.source=https://github.com/pauldaniv/yellow-taxi-scripts
 
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
-
 RUN apt-get -y update \
     && apt-get -y upgrade \
     && apt-get -y install screen awscli curl git gnupg apt-transport-https ca-certificates lsb-release \
@@ -18,9 +15,11 @@ RUN apt-get -y update \
     &&  apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
-WORKDIR /home/root
 ADD ci.sh /usr/bin/ci
 ADD config.json /home/root/.docker/config.json
 RUN chmod +x /usr/bin/ci
+
+USER root
+WORKDIR /home/root
 
 CMD ["/bin/bash"]
