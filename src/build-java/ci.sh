@@ -12,25 +12,33 @@ fi
 chmod +x gradlew
 REPO_NAME=${PWD##*/}
 
+function codeArtifactLogin() {
+    echo "Logging into CodeArtifact"
+    export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain promotion --domain-owner $(AWS_DOMAIN_OWNER_ID) --region us-east-2 --query authorizationToken --output text`
+    if [[ $? = 0 ]]; then
+      echo "Login into CodeArtifact succeeded"
+    else
+      echo "Failed to login into CodeArtifact"
+      exit 1
+    fi
+}
+
 function runBuild() {
+  codeArtifactLogin
+
   echo "Building..."
   ./gradlew build
 }
 
 function runTest() {
+  codeArtifactLogin
+
   echo "Running tests..."
   ./gradlew test
 }
 
 function publishArtifacts() {
-  echo "Logging into CodeArtifact"
-  export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain promotion --domain-owner $(AWS_DOMAIN_OWNER_ID) --region us-east-2 --query authorizationToken --output text`
-  if [[ $? = 0 ]]; then
-    echo "Login into CodeArtifact succeeded"
-  else
-    echo "Failed to login into CodeArtifact"
-    exit 1
-  fi
+  codeArtifactLogin
 
   echo "Publishing artifacts..."
   ./gradlew publish
