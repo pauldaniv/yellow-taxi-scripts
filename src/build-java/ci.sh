@@ -10,6 +10,7 @@ if [[ -z "$ACTION" ]]; then
 fi
 
 chmod +x gradlew
+REPO_NAME=${PWD##*/}
 
 function runBuild() {
   echo "Building..."
@@ -23,13 +24,13 @@ function runTest() {
 
 function publishArtifacts() {
   echo "Publishing artifacts..."
-  ./gradlew deploy --imageName "$ECR_CONTAINER_REGISTRY_URL/`basename`:latest"
+  ./gradlew deploy --imageName "$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
 }
 
 function deploy() {
   echo "Deploying..."
-  local image_name="$ECR_CONTAINER_REGISTRY_URL/`basename`:latest"
-  ./gradlew bootBuildImage --imageName "$ECR_CONTAINER_REGISTRY_URL/`basename`:latest"
+  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
+  ./gradlew bootBuildImage --imageName "$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
   docker push $image_name
 }
 
