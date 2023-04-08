@@ -15,7 +15,7 @@ cd "$(cd "$(dirname "$0")/.."; pwd)"
 function build_image() {
     local image=$1
     local repo=$GITHUB_CONTAINER_REGISTRY_URL
-    local image_tag="$repo/$image:latest"
+    local image_tag="$repo/$image:latest" #todo: add commit hash
     echo "Building '$image_tag'..."
     docker build $BUILD_OPTS -t "$image_tag" "src/$image"
 }

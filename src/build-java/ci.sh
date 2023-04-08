@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 
-echo "Content of docker config.json"
-cat /home/root/.docker/config.json
-echo "Home folder..."
-echo $HOME
-env
-pwd
+# While running on GitHub actions the ~/.docker/config.json file for docker
+# is not visible as the home folder is changed from /home/root to a different one
+# that's why we have to copy the config file on flight before trying to access ECR
 
-cat /home/root/.docker/config.json > /github/home/.docker/config.json
-cp /home/root/.docker/config.json /github/home/.docker/config.json
+mkdir -p $HOME/.docker/
+cp /home/root/.docker/config.json $HOME/.docker/config.json
 
 ACTION=$1
 
@@ -29,17 +26,6 @@ function codeArtifactLogin() {
       echo "Login into CodeArtifact succeeded"
     else
       echo "Failed to login into CodeArtifact"
-      exit 1
-    fi
-}
-
-function containerRegistryLogin() {
-    echo "Logging into ContainerRegistry"
-    aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $AWS_DOMAIN_OWNER_ID.dkr.ecr.us-east-2.amazonaws.com
-    if [[ ! -z "$CODEARTIFACT_AUTH_TOKEN" ]]; then
-      echo "Login into ContainerRegistry succeeded"
-    else
-      echo "Failed to login into ContainerRegistry"
       exit 1
     fi
 }
@@ -67,11 +53,11 @@ function publishArtifacts() {
 }
 
 function pushDockerImage() {
-  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
+  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest" #todo: add commit hash
   echo "Building '$image_name' docker image..."
   ./gradlew bootBuildImage --imageName "$image_name"
   echo "Push '$image_name' docker image..."
-  strace docker push $image_name
+  docker push $image_name
   echo "Pushed!"
 }
 
