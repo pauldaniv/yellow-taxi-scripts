@@ -25,7 +25,7 @@ function codeArtifactLogin() {
 
 function containerRegistryLogin() {
     echo "Logging into ContainerRegistry"
-    aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 375158168967.dkr.ecr.us-east-2.amazonaws.com
+    aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $AWS_DOMAIN_OWNER_ID.dkr.ecr.us-east-2.amazonaws.com
     if [[ ! -z "$CODEARTIFACT_AUTH_TOKEN" ]]; then
       echo "Login into ContainerRegistry succeeded"
     else
@@ -56,8 +56,6 @@ function publishArtifacts() {
 }
 
 function pushDockerImage() {
-  containerRegistryLogin
-
   echo "Deploying..."
   local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
   ./gradlew bootBuildImage --imageName "$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"

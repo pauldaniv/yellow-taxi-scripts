@@ -17,8 +17,10 @@ RUN apt-get -y update \
     && apt-get -y install docker-ce docker-ce-cli containerd.io amazon-ecr-credential-helper  \
     &&  apt-get clean && rm -rf /var/lib/apt/lists/*
 
+
 WORKDIR /home/root
 ADD ci.sh /usr/bin/ci
+ADD config.json /home/root/.docker/config.json
 RUN chmod +x /usr/bin/ci
 
 CMD ["/bin/bash"]
