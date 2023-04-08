@@ -23,6 +23,17 @@ function codeArtifactLogin() {
     fi
 }
 
+function containerRegistryLogin() {
+    echo "Logging into ContainerRegistry"
+    aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 375158168967.dkr.ecr.us-east-2.amazonaws.com
+    if [[ ! -z "$CODEARTIFACT_AUTH_TOKEN" ]]; then
+      echo "Login into ContainerRegistry succeeded"
+    else
+      echo "Failed to login into ContainerRegistry"
+      exit 1
+    fi
+}
+
 function runBuild() {
   codeArtifactLogin
 
@@ -44,13 +55,19 @@ function publishArtifacts() {
   ./gradlew publish
 }
 
-function deploy() {
+function pushDockerImage() {
+  containerRegistryLogin
+
   echo "Deploying..."
   local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
   ./gradlew bootBuildImage --imageName "$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
   docker push $image_name
 }
 
+function deploy() {
+  echo "Deploying..."
+  #todo: update manifests
+}
 
 if [[ "$ACTION" = "build" ]]; then
   runBuild
@@ -59,6 +76,7 @@ elif [[ "$ACTION" = "test" ]]; then
 elif [[ "$ACTION" = "publish" ]]; then
     publishArtifacts
 elif [[ "$ACTION" = "deploy" ]]; then
+  pushDockerImage
   deploy
 else
   echo "Unknown command $ACTION"
