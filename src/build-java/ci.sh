@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Content of docker config.json"
+cat /home/root/.docker/config.json
 echo "Home folder..."
 echo $HOME
 env
