@@ -14,7 +14,7 @@ REPO_NAME=${PWD##*/}
 
 function codeArtifactLogin() {
     echo "Logging into CodeArtifact"
-    export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain promotion --domain-owner $(AWS_DOMAIN_OWNER_ID) --region us-east-2 --query authorizationToken --output text`
+    export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain promotion --domain-owner "$AWS_DOMAIN_OWNER_ID" --region us-east-2 --query authorizationToken --output text`
     if [[ $? = 0 ]]; then
       echo "Login into CodeArtifact succeeded"
     else
