@@ -53,13 +53,16 @@ function publishArtifacts() {
 
   echo "Publishing artifacts..."
   ./gradlew publish
+  echo "Published!"
 }
 
 function pushDockerImage() {
-  echo "Deploying..."
   local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
-  ./gradlew bootBuildImage --imageName "$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
-  docker push $image_name
+  echo "Build '$image_name' docker image..."
+  ./gradlew bootBuildImage --imageName "$image_name"
+  echo "Push '$image_name' docker image..."
+  strace docker push $image_name
+  echo "Pushed!"
 }
 
 function deploy() {
