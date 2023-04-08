@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+echo "Home folder..."
+echo $HOME
+env
+pwd
+
+cat /home/root/.docker/config.json > /github/home/.docker/config.json
+cp /home/root/.docker/config.json /github/home/.docker/config.json
+
 ACTION=$1
 
 ECR_CONTAINER_REGISTRY_URL="$AWS_DOMAIN_OWNER_ID.dkr.ecr.us-east-2.amazonaws.com"
@@ -58,7 +66,7 @@ function publishArtifacts() {
 
 function pushDockerImage() {
   local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest"
-  echo "Build '$image_name' docker image..."
+  echo "Building '$image_name' docker image..."
   ./gradlew bootBuildImage --imageName "$image_name"
   echo "Push '$image_name' docker image..."
   strace docker push $image_name
