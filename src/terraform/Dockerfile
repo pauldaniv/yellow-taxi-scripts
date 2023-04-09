@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/pauldaniv/yellow-taxi-s
 
 RUN apt-get -y update \
     && apt-get -y upgrade \
-    && apt-get -y install wget curl git screen awscli apt-transport-https ca-certificates curl gnupg lsb-release \
+    && apt-get -y install wget curl git screen awscli apt-transport-https ca-certificates gnupg lsb-release \
     && wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | \
         tee /usr/share/keyrings/hashicorp-archive-keyring.gpg \
     && gpg --no-default-keyring \
