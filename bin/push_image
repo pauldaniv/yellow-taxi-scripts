@@ -10,14 +10,14 @@ if [[ -z "$IMAGE_NAME" ]]; then
 fi
 
 function push_image() {
-  local image=$1
+  local image_name=$1
   local repo=$GITHUB_CONTAINER_REGISTRY_URL
-  local image_name="$repo/$image"
-  local image_tag="$image_name:$(get_version)"
+  local image="$repo/$image_name"
+  local image_tag="$image:$(get_version "$image_name")"
 
-  echo "Pushing '$image_tag' and '$image_name:latest' tags..."
+  echo "Pushing '$image_tag' and '$image:latest' tags..."
   docker push "$image_tag"
-  docker push "$image_name:latest"
+  docker push "$image:latest"
 }
 
 push_image "$IMAGE_NAME"
