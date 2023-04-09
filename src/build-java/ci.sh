@@ -55,19 +55,20 @@ function publishArtifacts() {
 }
 
 function pushDockerImage() {
-  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME" #todo: add commit hash
+  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME"
   echo "Building '$image_name' docker image..."
   ./gradlew bootBuildImage --imageName "$image_name"
 
   local versioned_tag="$image_name:$commit_hash"
   local latest_tag="$image_name:latest"
 
-  docker tag "$image_name" $versioned_tag
-  docker tag "$image_name" $latest_tag
+  echo "Tagging '$image_name' with '$versioned_tag' and '$latest_tag'"
+  docker tag "$image_name" "$versioned_tag"
+  docker tag "$image_name" "$latest_tag"
 
-  echo "Push '"$image_name:$commit_hash"' docker image..."
+  echo "Pushing '$versioned_tag' and '$latest_tag' docker image..."
   docker push $versioned_tag
-  docker push $latest
+  docker push $latest_tag
 
   echo "Pushed!"
 }
