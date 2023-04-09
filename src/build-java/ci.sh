@@ -18,6 +18,8 @@ fi
 
 chmod +x gradlew
 REPO_NAME=${PWD##*/}
+commit_hash=$(git rev-parse --short "$GITHUB_SHA")
+git_branch=${GITHUB_REF#refs/heads/}
 
 function codeArtifactLogin() {
     echo "Logging into CodeArtifact"
@@ -53,16 +55,26 @@ function publishArtifacts() {
 }
 
 function pushDockerImage() {
-  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME:latest" #todo: add commit hash
+  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME" #todo: add commit hash
   echo "Building '$image_name' docker image..."
   ./gradlew bootBuildImage --imageName "$image_name"
-  echo "Push '$image_name' docker image..."
-  docker push $image_name
+
+  local versioned_tag="$image_name:$commit_hash"
+  local latest_tag="$image_name:latest"
+
+  docker tag "$image_name" $versioned_tag
+  docker tag "$image_name" $latest_tag
+
+  echo "Push '"$image_name:$commit_hash"' docker image..."
+  docker push $versioned_tag
+  docker push $latest
+
   echo "Pushed!"
 }
 
 function deploy() {
   echo "Deploying..."
+  echo "Checkout manifests and update image version"
   #todo: update manifests
 }
 

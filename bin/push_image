@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
 
-GITHUB_CONTAINER_REGISTRY_URL="ghcr.io/pauldaniv/yellow-taxi-scripts"
-IMAGE_NAME=$1
+cd "$(cd "$(dirname "$0")/.."; pwd)"
+
+source bin/commons.sh
 
 if [[ -z "$IMAGE_NAME" ]]; then
   echo "No image specified..."
   exit 1
 fi
 
-cd "$(cd "$(dirname "$0")/.."; pwd)"
-
 function push_image() {
-    local image=$1
-    local repo=$GITHUB_CONTAINER_REGISTRY_URL
-    local image_tag="$repo/$image:latest"
-    echo "Pushing '$image_tag' image..."
-    docker push $image_tag
+  local image=$1
+  local repo=$GITHUB_CONTAINER_REGISTRY_URL
+  local image_name="$repo/$image"
+  local image_tag="$image_name:$(get_version)"
+
+  echo "Pushing '$image_tag' and '$image_name:latest' tags..."
+  docker push "$image_tag"
+  docker push "$image_name:latest"
 }
 
 push_image "$IMAGE_NAME"

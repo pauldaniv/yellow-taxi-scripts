@@ -2,28 +2,27 @@
 
 BUILD_OPTS="--no-cache"
 
-GITHUB_CONTAINER_REGISTRY_URL="ghcr.io/pauldaniv/yellow-taxi-scripts"
-IMAGE_NAME=$1
+cd "$(cd "$(dirname "$0")/.."; pwd)"
+
+source bin/commons.sh
 
 if [[ -z "$IMAGE_NAME" ]]; then
   echo "No image specified..."
   exit 1
 fi
 
-cd "$(cd "$(dirname "$0")/.."; pwd)"
-
-git_hash=$(git rev-parse --short "$GITHUB_SHA")
-git_branch=${GITHUB_REF#refs/heads/}
-
-echo $git_hash
-echo git_branch
-
 function build_image() {
-    local image=$1
-    local repo=$GITHUB_CONTAINER_REGISTRY_URL
-    local image_tag="$repo/$image:latest" #todo: add commit hash
-    echo "Building '$image_tag'..."
-    docker build $BUILD_OPTS -t "$image_tag" "src/$image"
+  local image=$1
+  local repo=$GITHUB_CONTAINER_REGISTRY_URL
+  local image_name="$repo/$image"
+
+  echo "Building 'image_name'..."
+  docker build $BUILD_OPTS -t "$image_name" "src/$image"
+
+  local image_tag="$image_name:$(get_version)"
+  echo "Tagging '$image_name' with '$image_tag' and '$image_name:latest'"
+  docker tag "$image_name" "$image_tag"
+  docker tag "$image_name" "$image_name:latest"
 }
 
 build_image "$IMAGE_NAME"
