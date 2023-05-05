@@ -25,6 +25,7 @@ jobs:
         run: echo "images=$(ls src | grep -v base | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
   build-and-push-base:
+    needs: list-images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,7 +44,7 @@ jobs:
         run: ./bin/push_image base
 
   build-and-push-images:
-    needs: list-images
+    needs: [ list-images, build-and-push-base ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
