@@ -75,7 +75,18 @@ function pushDockerImage() {
 function deploy() {
   echo "Deploying..."
   echo "Checkout manifests and update image version"
-  #todo: update manifests
+  local MANIFESTS_REPO_NAME="yellow-taxi-manifests"
+  local MANIFESTS_REPO_URL="https://$MANIFESTS_SHARED_TOKEN@github.com/pauldaniv/${MANIFESTS_REPO_NAME}"
+
+  git clone --single-branch --depth 1 --branch main "${MANIFESTS_REPO_URL}"
+  cd $MANIFESTS_REPO_NAME
+  sed "s/versionTag:.*/versionTag: $commit_hash/g" -i values/${REPO_NAME}.yaml
+  git config user.name "github_workflow_$REPO_NAME"
+  git config user.email "github_workflow_$REPO_NAME"
+  git add values/${REPO_NAME}.yaml
+  git commit -m "Auto-deploy: $REPO_NAME, commit: $commit_hash"
+  git push --force origin HEAD
+  echo "Deployed!"
 }
 
 if [[ "$ACTION" = "build" ]]; then
