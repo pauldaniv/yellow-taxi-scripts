@@ -97,6 +97,8 @@ function deploy() {
 
   echo "Pushing file with updated tag:"
   cat values/${SERVICE_NAME}.yaml
+  git remote -v
+  git remote set-url origin $MANIFESTS_REPO_URL
   git push --force origin HEAD
   echo "Deployed!"
 }
