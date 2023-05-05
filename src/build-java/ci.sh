@@ -24,7 +24,7 @@ else
   SERVICE_NAME=$REPO_NAME
 fi
 
-commit_hash=$(git rev-parse --short "$GITHUB_SHA")
+commit_hash=$(git rev-parse --short HEAD)
 git_branch=${GITHUB_REF#refs/heads/}
 
 function codeArtifactLogin() {
