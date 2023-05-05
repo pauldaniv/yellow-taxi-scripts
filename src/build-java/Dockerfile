@@ -1,11 +1,11 @@
-FROM debian
+FROM ghcr.io/pauldaniv/yellow-taxi-scripts/base:latest
 
 MAINTAINER Pavlo Daniv <pauldaniv@gmail.com>
 LABEL org.opencontainers.image.source=https://github.com/pauldaniv/yellow-taxi-scripts
 
 RUN apt-get -y update \
   && apt-get -y upgrade \
-  && apt-get -y install screen awscli curl git gnupg apt-transport-https ca-certificates lsb-release \
+  && apt-get -y install screen curl git gnupg apt-transport-https ca-certificates lsb-release \
   && curl -fsSL https://download.docker.com/linux/debian/gpg | \
   gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
   &&  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
