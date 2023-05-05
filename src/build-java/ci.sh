@@ -23,9 +23,8 @@ if [[ -f service.txt ]]; then
 else
   SERVICE_NAME=$REPO_NAME
 fi
-echo "git rev-parse --short HEAD"
-git rev-parse --short HEAD
-commit_hash=$(git rev-parse --short "$GITHUB_SHA")
+
+commit_hash=$(git rev-parse --short HEAD)
 git_branch=${GITHUB_REF#refs/heads/}
 
 function codeArtifactLogin() {
@@ -89,16 +88,15 @@ function deploy() {
   git clone --single-branch --depth 1 --branch main "${MANIFESTS_REPO_URL}"
 
   cd $MANIFESTS_REPO_NAME
-  git remote -v
-  echo $commit_hash
   sed "s/versionTag:.*/versionTag: $commit_hash/g" -i values/${SERVICE_NAME}.yaml
-  #todo: remove debug
-  cat values/${SERVICE_NAME}.yaml
   git config user.name "github_workflow_$REPO_NAME"
   git config user.email "github_workflow_$REPO_NAME"
+
   git add values/${SERVICE_NAME}.yaml
   git commit -m "Auto-deploy: $SERVICE_NAME, commit: $commit_hash"
-#  git remote add origin "https://$MANIFESTS_SHARED_TOKEN@@github.com/pauldaniv/${MANIFESTS_REPO_NAME}"
+
+  echo "Pushing file with updated tag:"
+  cat values/${SERVICE_NAME}.yaml
   git push --force origin HEAD
   echo "Deployed!"
 }
