@@ -15,11 +15,7 @@ RUN apt-get -y update \
        https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
        tee /etc/apt/sources.list.d/hashicorp.list \
     && apt update \
-    && apt-get install terraform \
-    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip \
-    && ./aws/install \
-    && aws --version
+    && apt-get install terraform
 
 WORKDIR /home/root
 
