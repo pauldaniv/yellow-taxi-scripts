@@ -81,6 +81,8 @@ function deploy() {
 
   git clone --single-branch --depth 1 --branch main "${MANIFESTS_REPO_URL}"
   cd $MANIFESTS_REPO_NAME
+  #TODO: remove once done debugging
+  ls
   sed "s/versionTag:.*/versionTag: $commit_hash/g" -i values/${REPO_NAME}.yaml
   git config user.name "github_workflow_$REPO_NAME"
   git config user.email "github_workflow_$REPO_NAME"
