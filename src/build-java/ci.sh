@@ -18,6 +18,12 @@ fi
 
 chmod +x gradlew
 REPO_NAME=${PWD##*/}
+if [[ -f service.txt ]]; then
+  SERVICE_NAME=$(cat service.txt)
+else
+  SERVICE_NAME=$REPO_NAME
+fi
+
 commit_hash=$(git rev-parse --short "$GITHUB_SHA")
 git_branch=${GITHUB_REF#refs/heads/}
 
@@ -80,16 +86,13 @@ function deploy() {
   local MANIFESTS_REPO_URL="https://$MANIFESTS_SHARED_TOKEN@github.com/pauldaniv/${MANIFESTS_REPO_NAME}"
 
   git clone --single-branch --depth 1 --branch main "${MANIFESTS_REPO_URL}"
+
   cd $MANIFESTS_REPO_NAME
-  #TODO: remove once done debugging
-  ls
-  ls values
-  env
-  sed "s/versionTag:.*/versionTag: $commit_hash/g" -i values/${REPO_NAME}.yaml
+  sed "s/versionTag:.*/versionTag: $commit_hash/g" -i values/${SERVICE_NAME}.yaml
   git config user.name "github_workflow_$REPO_NAME"
   git config user.email "github_workflow_$REPO_NAME"
-  git add values/${REPO_NAME}.yaml
-  git commit -m "Auto-deploy: $REPO_NAME, commit: $commit_hash"
+  git add values/${SERVICE_NAME}.yaml
+  git commit -m "Auto-deploy: $SERVICE_NAME, commit: $commit_hash"
   git push --force origin HEAD
   echo "Deployed!"
 }
