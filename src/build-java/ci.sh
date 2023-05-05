@@ -23,8 +23,9 @@ if [[ -f service.txt ]]; then
 else
   SERVICE_NAME=$REPO_NAME
 fi
-
-commit_hash=$(git rev-parse --short HEAD)
+echo "git rev-parse --short HEAD"
+git rev-parse --short HEAD
+commit_hash=$(git rev-parse --short "$GITHUB_SHA")
 git_branch=${GITHUB_REF#refs/heads/}
 
 function codeArtifactLogin() {
