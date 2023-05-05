@@ -88,6 +88,7 @@ function deploy() {
   git clone --single-branch --depth 1 --branch main "${MANIFESTS_REPO_URL}"
 
   cd $MANIFESTS_REPO_NAME
+  echo $commit_hash
   sed "s/versionTag:.*/versionTag: $commit_hash/g" -i values/${SERVICE_NAME}.yaml
   #todo: remove debug
   cat values/${SERVICE_NAME}.yaml
