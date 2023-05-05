@@ -3,9 +3,12 @@ FROM ghcr.io/helmfile/helmfile-debian-stable-slim:latest
 MAINTAINER Pavlo Daniv <pauldaniv@gmail.com>
 LABEL org.opencontainers.image.source=https://github.com/pauldaniv/yellow-taxi-scripts
 
-RUN apt-get -y update \
+RUN echo "Update and Install dependencies" \
+    && apt-get -y update \
     && apt-get -y upgrade \
-    && apt-get -y install curl zip screen \
+    && apt-get -y install curl zip screen
+
+RUN echo "Install AWSCLIv2" \
     && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
     && unzip awscliv2.zip \
     && ./aws/install \
