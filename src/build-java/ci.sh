@@ -83,7 +83,7 @@ function deploy() {
   echo "Deploying..."
   echo "Checkout manifests and update image version"
   local MANIFESTS_REPO_NAME="yellow-taxi-manifests"
-  local MANIFESTS_REPO_URL="https://$MANIFESTS_SHARED_TOKEN@github.com/pauldaniv/${MANIFESTS_REPO_NAME}"
+  local MANIFESTS_REPO_URL="https://pauldaniv:$MANIFESTS_SHARED_TOKEN@github.com/pauldaniv/${MANIFESTS_REPO_NAME}"
 
   git clone --single-branch --depth 1 --branch main "${MANIFESTS_REPO_URL}"
 
