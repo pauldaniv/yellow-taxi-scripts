@@ -89,6 +89,8 @@ function deploy() {
 
   cd $MANIFESTS_REPO_NAME
   sed "s/versionTag:.*/versionTag: $commit_hash/g" -i values/${SERVICE_NAME}.yaml
+  #todo: remove debug
+  cat values/${SERVICE_NAME}.yaml
   git config user.name "github_workflow_$REPO_NAME"
   git config user.email "github_workflow_$REPO_NAME"
   git add values/${SERVICE_NAME}.yaml
