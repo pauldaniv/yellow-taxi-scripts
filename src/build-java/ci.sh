@@ -97,7 +97,7 @@ function deploy() {
 
   echo "Pushing file with updated tag:"
   cat values/${SERVICE_NAME}.yaml
-  git push --force origin HEAD
+  git push --force origin HEAD --force-with-lease
   echo "Deployed!"
 }
 
