@@ -61,7 +61,7 @@ function publishArtifacts() {
 }
 
 function pushDockerImage() {
-  local image_name="$ECR_CONTAINER_REGISTRY_URL/$REPO_NAME"
+  local image_name="$ECR_CONTAINER_REGISTRY_URL/$SERVICE_NAME"
   echo "Building '$image_name' docker image..."
   ./gradlew bootBuildImage --imageName "$image_name"
 
