@@ -39,6 +39,7 @@ function codeArtifactLogin() {
 }
 
 function runBuild() {
+  codeArtifactLogin
   echo "Building..."
   ./gradlew build
 }
@@ -49,6 +50,7 @@ function runTest() {
 }
 
 function publishArtifacts() {
+  codeArtifactLogin
   echo "Publishing artifacts..."
   ./gradlew publish
   echo "Published!"
