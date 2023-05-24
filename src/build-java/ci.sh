@@ -28,33 +28,27 @@ commit_hash=$(git rev-parse --short HEAD)
 git_branch=${GITHUB_REF#refs/heads/}
 
 function codeArtifactLogin() {
-    echo "Logging into CodeArtifact"
-    export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain promotion --domain-owner $AWS_DOMAIN_OWNER_ID --region us-east-2 --query authorizationToken --output text`
-    if [[ ! -z "$CODEARTIFACT_AUTH_TOKEN" ]]; then
-      echo "Login into CodeArtifact succeeded"
-    else
-      echo "Failed to login into CodeArtifact"
-      exit 1
-    fi
+  echo "Logging into CodeArtifact"
+  export CODEARTIFACT_AUTH_TOKEN=$(aws codeartifact get-authorization-token --domain promotion --domain-owner $AWS_DOMAIN_OWNER_ID --region us-east-2 --query authorizationToken --output text)
+  if [[ ! -z "$CODEARTIFACT_AUTH_TOKEN" ]]; then
+    echo "Login into CodeArtifact succeeded"
+  else
+    echo "Failed to login into CodeArtifact"
+    exit 1
+  fi
 }
 
 function runBuild() {
-  codeArtifactLogin
-
   echo "Building..."
   ./gradlew build
 }
 
 function runTest() {
-  codeArtifactLogin
-
   echo "Running tests..."
   ./gradlew test
 }
 
 function publishArtifacts() {
-  codeArtifactLogin
-
   echo "Publishing artifacts..."
   ./gradlew publish
   echo "Published!"
@@ -100,13 +94,14 @@ function deploy() {
   git push --force origin HEAD --force-with-lease
   echo "Deployed!"
 }
-
-if [[ "$ACTION" = "build" ]]; then
+if [[ "$ACTION" = "prepare" ]]; then
+  codeArtifactLogin
+elif [[ "$ACTION" = "build" ]]; then
   runBuild
 elif [[ "$ACTION" = "test" ]]; then
   runTest
 elif [[ "$ACTION" = "publish" ]]; then
-    publishArtifacts
+  publishArtifacts
 elif [[ "$ACTION" = "deploy" ]]; then
   pushDockerImage
   deploy
