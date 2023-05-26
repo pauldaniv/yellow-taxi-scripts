@@ -96,9 +96,8 @@ function deploy() {
   git push --force origin HEAD --force-with-lease
   echo "Deployed!"
 }
-if [[ "$ACTION" = "prepare" ]]; then
-  codeArtifactLogin
-elif [[ "$ACTION" = "build" ]]; then
+
+if [[ "$ACTION" = "build" ]]; then
   runBuild
 elif [[ "$ACTION" = "test" ]]; then
   runTest
