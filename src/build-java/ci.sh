@@ -49,6 +49,11 @@ function runTest() {
   ./gradlew test
 }
 
+function runTestCoverageCheck() {
+  echo "Running test coverage check..."
+  ./gradlew jacocoTestCoverageVerification
+}
+
 function publishArtifacts() {
   codeArtifactLogin
   echo "Publishing artifacts..."
@@ -100,6 +105,8 @@ function deploy() {
 if [[ "$ACTION" = "build" ]]; then
   runBuild
 elif [[ "$ACTION" = "test" ]]; then
+  runTest
+elif [[ "$ACTION" = "test_coverage_check" ]]; then
   runTest
 elif [[ "$ACTION" = "publish" ]]; then
   publishArtifacts
