@@ -45,6 +45,7 @@ function runBuild() {
 }
 
 function runTest() {
+  codeArtifactLogin
   echo "Running tests..."
   ./gradlew test
 }
