@@ -107,7 +107,7 @@ if [[ "$ACTION" = "build" ]]; then
 elif [[ "$ACTION" = "test" ]]; then
   runTest
 elif [[ "$ACTION" = "test_coverage_check" ]]; then
-  runTest
+  runTestCoverageCheck
 elif [[ "$ACTION" = "publish" ]]; then
   publishArtifacts
 elif [[ "$ACTION" = "deploy" ]]; then
