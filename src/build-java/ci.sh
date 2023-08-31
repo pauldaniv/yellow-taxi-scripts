@@ -110,6 +110,8 @@ elif [[ "$ACTION" = "test_coverage_check" ]]; then
   runTestCoverageCheck
 elif [[ "$ACTION" = "publish" ]]; then
   publishArtifacts
+elif [[ "$ACTION" = "push_image" ]]; then
+  pushDockerImage
 elif [[ "$ACTION" = "deploy" ]]; then
   pushDockerImage
   deploy
